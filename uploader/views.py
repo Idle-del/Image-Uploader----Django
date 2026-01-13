@@ -44,3 +44,15 @@ class MyImagesView(APIView):
             return Response({"error": "No images found"}, status=status.HTTP_404_NOT_FOUND)
         
         return Response({"image_url": img.image.url}, status=status.HTTP_200_OK)
+
+class PublicImagesView(APIView):
+    def get(self, request, firebase_uid):
+        
+        img = ImageUpload.objects.filter(firebase_uid=firebase_uid).order_by('-created_at').first()
+        if not img:
+            return Response({"error": "No images found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        public_url = f"https://kiran117.pythonanywhere.com{img.image.url}"
+        return Response({"image_url": public_url}, status=status.HTTP_200_OK)
+    
+    
